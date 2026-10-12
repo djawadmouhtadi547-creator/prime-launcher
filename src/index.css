@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --c-bg: 27 29 33;
+  --c-panel: 41 44 50;
+  --c-slot: 17 18 20;
+  --c-hi: 65 68 75;
+  --c-lo: 10 11 12;
+  --c-ink: 231 226 214;
+  --c-mute: 140 140 138;
+  --c-accent: 125 154 91;
+  --c-accent-hi: 163 188 132;
+  --c-accent-lo: 69 85 50;
+  --c-accent-ink: 20 22 18;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background-color: rgb(var(--c-bg));
+  color: rgb(var(--c-ink));
+  font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+html[data-pattern='on'] body {
+  background-image: conic-gradient(
+    rgb(255 255 255 / 0.018) 25%,
+    transparent 0 50%,
+    rgb(255 255 255 / 0.018) 0 75%,
+    transparent 0
+  );
+  background-size: 16px 16px;
+}
+
+input,
+textarea,
+.selectable {
+  user-select: text;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: rgb(var(--c-slot));
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--c-panel));
+  border: 2px solid;
+  border-color: rgb(var(--c-hi)) rgb(var(--c-lo)) rgb(var(--c-lo)) rgb(var(--c-hi));
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--c-accent));
+  outline-offset: 2px;
+}
+
+@layer components {
+  /* لوح بارز، مثل خانات الواجهة داخل اللعبة */
+  .bevel {
+    background-color: rgb(var(--c-panel));
+    border: 2px solid;
+    border-color: rgb(var(--c-hi)) rgb(var(--c-lo)) rgb(var(--c-lo)) rgb(var(--c-hi));
+  }
+
+  /* خانة غائرة */
+  .inset {
+    background-color: rgb(var(--c-slot));
+    border: 2px solid;
+    border-color: rgb(var(--c-lo)) rgb(var(--c-hi)) rgb(var(--c-hi)) rgb(var(--c-lo));
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    background-color: rgb(var(--c-panel));
+    color: rgb(var(--c-ink));
+    border: 2px solid;
+    border-color: rgb(var(--c-hi)) rgb(var(--c-lo)) rgb(var(--c-lo)) rgb(var(--c-hi));
+  }
+  .btn:hover:not(:disabled) {
+    filter: brightness(1.18);
+  }
+  .btn:active:not(:disabled) {
+    border-color: rgb(var(--c-lo)) rgb(var(--c-hi)) rgb(var(--c-hi)) rgb(var(--c-lo));
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-accent {
+    background-color: rgb(var(--c-accent));
+    color: rgb(var(--c-accent-ink));
+    border-color: rgb(var(--c-accent-hi)) rgb(var(--c-accent-lo)) rgb(var(--c-accent-lo))
+      rgb(var(--c-accent-hi));
+    box-shadow: 0 3px 0 rgb(0 0 0 / 0.45);
+  }
+  .btn-accent:active:not(:disabled) {
+    border-color: rgb(var(--c-accent-lo)) rgb(var(--c-accent-hi)) rgb(var(--c-accent-hi))
+      rgb(var(--c-accent-lo));
+    box-shadow: 0 1px 0 rgb(0 0 0 / 0.45);
+    transform: translateY(2px);
+  }
+
+  .field {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    color: rgb(var(--c-ink));
+    background-color: rgb(var(--c-slot));
+    border: 2px solid;
+    border-color: rgb(var(--c-lo)) rgb(var(--c-hi)) rgb(var(--c-hi)) rgb(var(--c-lo));
+    outline: none;
+  }
+  .field:focus {
+    border-color: rgb(var(--c-accent));
+  }
+  .field::placeholder {
+    color: rgb(var(--c-mute) / 0.7);
+  }
+  select.field {
+    appearance: none;
+    padding-left: 2rem;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0h10L5 6z' fill='%238c8c8a'/></svg>");
+    background-repeat: no-repeat;
+    background-position: left 0.75rem center;
+  }
+  select.field option {
+    background-color: rgb(var(--c-panel));
+    color: rgb(var(--c-ink));
+  }
+
+  .check {
+    appearance: none;
+    flex: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    background-color: rgb(var(--c-slot));
+    border: 2px solid;
+    border-color: rgb(var(--c-lo)) rgb(var(--c-hi)) rgb(var(--c-hi)) rgb(var(--c-lo));
+  }
+  .check:checked {
+    background-color: rgb(var(--c-accent));
+    box-shadow: inset 0 0 0 3px rgb(var(--c-slot));
+  }
+
+  /* شريط الذاكرة: مقاطع مثل قطع البناء */
+  .ram {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 26px;
+    background: transparent;
+    cursor: pointer;
+  }
+  .ram::-webkit-slider-runnable-track {
+    height: 14px;
+    border: 2px solid;
+    border-color: rgb(var(--c-lo)) rgb(var(--c-hi)) rgb(var(--c-hi)) rgb(var(--c-lo));
+    background:
+      repeating-linear-gradient(to right, transparent 0 18px, rgb(0 0 0 / 0.35) 18px 20px),
+      linear-gradient(
+        to right,
+        rgb(var(--c-accent)) var(--fill),
+        rgb(var(--c-slot)) var(--fill)
+      );
+  }
+  .ram::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 26px;
+    margin-top: -8px;
+    background: rgb(var(--c-panel));
+    border: 2px solid;
+    border-color: rgb(var(--c-hi)) rgb(var(--c-lo)) rgb(var(--c-lo)) rgb(var(--c-hi));
+    box-shadow: 0 2px 0 rgb(0 0 0 / 0.4);
+  }
+}

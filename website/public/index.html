@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prime Launcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{--bg:#1b1d21;--panel:#292c32;--slot:#111214;--hi:#41444b;--lo:#0a0b0c;--ink:#e7e2d6;--mute:#8c8c8a;--acc:#7d9a5b;--acc-hi:#a3bc84;--acc-lo:#455532}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 'IBM Plex Sans Arabic',system-ui,sans-serif}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  .bevel{background:var(--panel);border:2px solid;border-color:var(--hi) var(--lo) var(--lo) var(--hi)}
+  .inset{background:var(--slot);border:2px solid;border-color:var(--lo) var(--hi) var(--hi) var(--lo)}
+  h1,h2{font-family:'Reem Kufi',sans-serif;margin:0}
+  header{display:flex;align-items:center;gap:12px;padding:20px 0}
+  header b{font:700 24px 'Reem Kufi',sans-serif}
+  .hero{padding:56px 0 40px}
+  .hero h1{font-size:clamp(40px,8vw,72px);font-weight:700;line-height:1.2}
+  .hero p{max-width:520px;color:var(--mute);margin:16px 0 28px}
+  .btn{display:inline-block;padding:10px 22px;color:var(--ink);text-decoration:none;font-weight:500;cursor:pointer;font-family:inherit;font-size:15px;
+    background:var(--panel);border:2px solid;border-color:var(--hi) var(--lo) var(--lo) var(--hi)}
+  .btn.acc{background:var(--acc);color:#141612;border-color:var(--acc-hi) var(--acc-lo) var(--acc-lo) var(--acc-hi);box-shadow:0 3px 0 rgba(0,0,0,.45)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:8px 0 48px}
+  .grid div{padding:16px}.grid h2{font-size:20px}.grid p{margin:4px 0 0;color:var(--mute);font-size:14px}
+  section.tool{padding:22px;margin-bottom:48px}
+  input[type=text]{width:100%;padding:9px 12px;color:var(--ink);font:inherit;direction:ltr;outline:none;background:var(--slot);border:2px solid;border-color:var(--lo) var(--hi) var(--hi) var(--lo)}
+  input[type=text]:focus{border-color:var(--acc)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+  #msg{min-height:1.6em;color:var(--acc-hi)}#msg.err{color:#e3a79f}
+  #dl a{margin-inline-end:10px}
+  footer{color:var(--mute);font-size:13px;padding:20px 0 40px}
+  :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><svg width="18" height="23" viewBox="0 0 7 9" shape-rendering="crispEdges" aria-hidden="true"><path fill="#7d9a5b" d="M0 0h6v1H0zM0 1h2v8H0zM5 1h2v3H5zM2 4h4v1H2z"/></svg><b>Prime Launcher</b></header>
+
+  <div class="hero">
+    <h1>لانشر ماينكرافت<br />بالعربي</h1>
+    <p>خفيف وسريع، يدعم الدخول الأوفلاين، تثبيت المودات من Modrinth وCurseForge، وسكنات خاصة بسيرفرك.</p>
+    <div id="dl"><span class="btn" style="opacity:.6">جارٍ تحميل الروابط…</span></div>
+  </div>
+
+  <div class="grid">
+    <div class="bevel"><h2>واجهة عربية</h2><p>من اليمين لليسار بالكامل.</p></div>
+    <div class="bevel"><h2>مودات بنقرة</h2><p>مع تثبيت الاعتمادات تلقائياً.</p></div>
+    <div class="bevel"><h2>سكنات أوفلاين</h2><p>ارفع سكنك ليراه اللاعبون على السيرفر.</p></div>
+    <div class="bevel"><h2>حجم صغير</h2><p>مبني على Tauri بدلاً من Electron.</p></div>
+  </div>
+
+  <section class="tool bevel">
+    <h2>رفع السكن</h2>
+    <p style="color:var(--mute);margin:4px 0 0">مقاس PNG: ‎64×64‎ أو ‎64×32‎. يُحجز الاسم لهذا الجهاز عند أول رفع.</p>
+    <div class="row"><input type="text" id="name" placeholder="Steve" maxlength="16" /></div>
+    <div class="row">
+      <label class="btn">اختيار ملف<input id="file" type="file" accept="image/png" hidden /></label>
+      <button class="btn acc" id="up" disabled>رفع</button>
+    </div>
+    <div id="msg" role="status"></div>
+    <img id="prev" alt="" style="display:none;image-rendering:pixelated;width:128px;margin-top:8px" class="inset" />
+  </section>
+  <footer>Prime Launcher — ماينكرافت علامة تجارية لشركة Mojang. المشروع غير تابع لها.</footer>
+</div>
+<script>
+const $ = (id) => document.getElementById(id);
+const msg = (t, err) => { $('msg').textContent = t; $('msg').className = err ? 'err' : ''; };
+const fmt = (b) => (b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.round(b / 1024) + ' KB');
+
+fetch('/api/downloads').then((r) => r.json()).then((files) => {
+  $('dl').innerHTML = files.length
+    ? files.map((f) => `<a class="btn acc" href="/downloads/${encodeURIComponent(f.name)}">${f.name} (${fmt(f.size)})</a>`).join('')
+    : '<span class="btn">لا توجد ملفات تنزيل بعد</span>';
+}).catch(() => { $('dl').textContent = ''; });
+
+function token(name) {
+  const k = 'prime.skintoken.' + name.toLowerCase();
+  let t = localStorage.getItem(k);
+  if (!t) {
+    const a = crypto.getRandomValues(new Uint8Array(24));
+    t = Array.from(a, (b) => b.toString(16).padStart(2, '0')).join('');
+    localStorage.setItem(k, t);
+  }
+  return t;
+}
+let file = null;
+const refresh = () => { $('up').disabled = !(file && /^[A-Za-z0-9_]{3,16}$/.test($('name').value)); };
+$('name').addEventListener('input', refresh);
+$('file').addEventListener('change', (e) => {
+  file = e.target.files[0] || null;
+  if (file) { $('prev').src = URL.createObjectURL(file); $('prev').style.display = 'block'; }
+  refresh();
+});
+$('up').addEventListener('click', async () => {
+  const name = $('name').value;
+  $('up').disabled = true; msg('جارٍ الرفع…');
+  try {
+    const res = await fetch('/api/skins/' + encodeURIComponent(name), {
+      method: 'PUT', headers: { 'Content-Type': 'image/png', 'X-Skin-Token': token(name) }, body: file,
+    });
+    const j = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(j.error || 'فشل الرفع');
+    msg('تم رفع السكن بنجاح.');
+  } catch (e) { msg(e.message, true); }
+  refresh();
+});
+</script>
+</body>
+</html>

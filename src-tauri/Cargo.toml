@@ -1,0 +1,26 @@
+[package]
+name = "prime-launcher"
+version = "1.0.0"
+description = "Prime Launcher - لانشر ماينكرافت عربي"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
+futures-util = "0.3"
+md5 = "0.7"
+zip = { version = "0.6", default-features = false, features = ["deflate"] }
+dirs = "5"
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
